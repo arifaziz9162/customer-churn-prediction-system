@@ -4,7 +4,7 @@ from pathlib import Path
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-project_name = "wine_quality_prediction"
+project_name = "customer_churn_prediction"
 
 src_folders = [
     f"src/{project_name}",
@@ -136,7 +136,7 @@ extra_files = [
     "deployment/k8s/base/monitoring/prometheus/prometheus.k8s.yml",
     "deployment/k8s/base/monitoring/prometheus/alert_rules.yml",
 
-    "deployment/k8s/base/monitoring/grafana/dashboards/wine-quality-overview.json",
+    "deployment/k8s/base/monitoring/grafana/dashboards/customer-churn-overview.json",
     "deployment/k8s/base/monitoring/grafana/provisioning/datasources/prometheus.yml",
     "deployment/k8s/base/monitoring/grafana/provisioning/dashboards/dashboards.yml",
 
