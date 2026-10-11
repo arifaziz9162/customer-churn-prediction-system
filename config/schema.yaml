@@ -1,0 +1,80 @@
+COLUMNS:
+  customer_id: str
+  gender: str
+  senior_citizen: int
+  partner: str
+  dependents: str
+  tenure: int
+  phone_service: str
+  multiple_lines: str
+  internet_service: str
+  online_security: str
+  online_backup: str
+  device_protection: str
+  tech_support: str
+  streaming_tv: str
+  streaming_movies: str
+  contract: str
+  paperless_billing: str
+  payment_method: str
+  monthly_charges: float
+  total_charges: float
+  churn: str
+
+TARGET_COLUMN: churn
+
+ID_COLUMN: customer_id
+
+# Target values and the 0/1 label the model trains on
+TARGET_MAPPING:
+  "No": 0
+  "Yes": 1
+
+# Columns allowed to contain nulls (blank for tenure-0 customers in the raw data)
+NULLABLE_COLUMNS:
+  - total_charges
+
+NUMERICAL_COLUMNS:
+  - senior_citizen
+  - tenure
+  - monthly_charges
+  - total_charges
+
+CATEGORICAL_COLUMNS:
+  - gender
+  - partner
+  - dependents
+  - phone_service
+  - multiple_lines
+  - internet_service
+  - online_security
+  - online_backup
+  - device_protection
+  - tech_support
+  - streaming_tv
+  - streaming_movies
+  - contract
+  - paperless_billing
+  - payment_method
+
+# Allowed values per categorical column, used by data validation
+CATEGORICAL_VALUES:
+  gender: [Female, Male]
+  partner: ["Yes", "No"]
+  dependents: ["Yes", "No"]
+  phone_service: ["Yes", "No"]
+  multiple_lines: ["Yes", "No", No phone service]
+  internet_service: [DSL, Fiber optic, "No"]
+  online_security: ["Yes", "No", No internet service]
+  online_backup: ["Yes", "No", No internet service]
+  device_protection: ["Yes", "No", No internet service]
+  tech_support: ["Yes", "No", No internet service]
+  streaming_tv: ["Yes", "No", No internet service]
+  streaming_movies: ["Yes", "No", No internet service]
+  contract: [Month-to-month, One year, Two year]
+  paperless_billing: ["Yes", "No"]
+  payment_method:
+    - Electronic check
+    - Mailed check
+    - Bank transfer (automatic)
+    - Credit card (automatic)

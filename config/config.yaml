@@ -1,0 +1,61 @@
+ARTIFACTS_ROOT: artifacts
+
+MLFLOW:
+  REPO_OWNER: TechArif
+  REPO_NAME: customer-churn-prediction-system
+  EXPERIMENT_NAME: Customer Churn Prediction
+
+DATA_INGESTION:
+  ROOT_DIR: artifacts/data_ingestion
+  KAGGLE_DATASET: blastchar/telco-customer-churn
+  KAGGLE_FILE_NAME: WA_Fn-UseC_-Telco-Customer-Churn.csv
+  DOWNLOAD_DIR: artifacts/data_ingestion/download
+  RAW_DATA_PATH: artifacts/data_ingestion/raw_data.csv
+  STATUS_FILE: artifacts/data_ingestion/status.json
+
+DATA_VALIDATION:
+  ROOT_DIR: artifacts/data_validation
+  RAW_DATA_PATH: artifacts/data_ingestion/raw_data.csv
+  REPORT_PATH: artifacts/data_validation/validation_report.json
+  STATUS_FILE: artifacts/data_validation/status.json
+
+DATA_TRANSFORMATION:
+  ROOT_DIR: artifacts/data_transformation
+  RAW_DATA_PATH: artifacts/data_ingestion/raw_data.csv
+  TRAIN_DATA_PATH: artifacts/data_transformation/train.csv
+  TEST_DATA_PATH: artifacts/data_transformation/test.csv
+  STATUS_FILE: artifacts/data_transformation/status.json
+
+MODEL_TRAINER:
+  ROOT_DIR: artifacts/model_trainer
+  TRAIN_DATA_PATH: artifacts/data_transformation/train.csv
+  MODEL_PATH: artifacts/model_trainer/model.joblib
+  SUMMARY_PATH: artifacts/model_trainer/training_summary.json
+  THRESHOLD_SWEEP_PATH: artifacts/model_trainer/threshold_sweep.csv
+  STATUS_FILE: artifacts/model_trainer/status.json
+
+MODEL_EVALUATION:
+  ROOT_DIR: artifacts/model_evaluation
+  TEST_DATA_PATH: artifacts/data_transformation/test.csv
+  MODEL_PATH: artifacts/model_trainer/model.joblib
+  SUMMARY_PATH: artifacts/model_trainer/training_summary.json
+  THRESHOLD_SWEEP_PATH: artifacts/model_trainer/threshold_sweep.csv
+  METRICS_PATH: artifacts/model_evaluation/metrics.json
+  STATUS_FILE: artifacts/model_evaluation/status.json
+
+MODEL_REGISTRY:
+  ROOT_DIR: artifacts/model_registry
+  METRICS_PATH: artifacts/model_evaluation/metrics.json
+  SUMMARY_PATH: artifacts/model_trainer/training_summary.json
+  REPORT_PATH: artifacts/model_registry/registry_report.json
+  MODEL_NAME: customer-churn-model
+  PRODUCTION_ALIAS: production
+  STATUS_FILE: artifacts/model_registry/status.json
+
+MODEL_PACKAGING:
+  ROOT_DIR: artifacts/model_packaging
+  REPORT_PATH: artifacts/model_packaging/packaging_report.json
+  REGISTRY_MODEL_NAME: customer-churn-model
+  PRODUCTION_ALIAS: production
+  BENTO_MODEL_NAME: customer_churn_model
+  STATUS_FILE: artifacts/model_packaging/status.json

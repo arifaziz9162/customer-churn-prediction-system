@@ -1,0 +1,38 @@
+TRAINING:
+  TEST_SIZE: 0.2
+  RANDOM_STATE: 42
+  CV_FOLDS: 5
+  SCORING: recall
+  N_JOBS: 2
+
+BAYESIAN_OPTIMIZATION:
+  N_TRIALS: 200
+  SEED: 42
+  DIRECTION: maximize
+
+# [low, high] for integer ranges, plain lists for categorical choices
+RANDOM_FOREST_SEARCH_SPACE:
+  N_ESTIMATORS: [100, 300]
+  MAX_DEPTH: [5, 15]
+  MIN_SAMPLES_SPLIT: [2, 20]
+  MIN_SAMPLES_LEAF: [1, 8]
+  MAX_FEATURES: [sqrt, log2]
+  CLASS_WEIGHT: [null, balanced, balanced_subsample]
+
+THRESHOLD_SELECTION:
+  MIN_THRESHOLD: 0.30
+  MAX_THRESHOLD: 0.60
+  STEP: 0.01
+  # Placeholder business costs, replace with real CLV / offer-cost estimates
+  COST_PER_MISSED_CHURN: 500
+  COST_PER_UNNECESSARY_OFFER: 50
+
+MODEL_EVALUATION:
+  # Threshold-independent, so the importances do not depend on the tuned cutoff
+  IMPORTANCE_SCORING: roc_auc
+  IMPORTANCE_REPEATS: 10
+
+MODEL_REGISTRY:
+  # A new model is promoted only if it beats the current production model on this metric
+  PROMOTION_METRIC: roc_auc
+  MIN_IMPROVEMENT: 0.0
