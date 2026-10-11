@@ -1,5 +1,10 @@
-# Model Registry / Model Loading
+# Experiment Tracking and Model Registry
 mlflow==3.16.1
+dagshub==0.7.1
+
+# Model Training
+optuna==4.9.0
+kaggle==2.2.4
 
 # Serving
 bentoml==1.4.39
