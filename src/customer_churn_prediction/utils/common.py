@@ -161,9 +161,7 @@ def save_status(
         status_data = {
             "stage": stage,
             "status": "success" if success else "failed",
-            "timestamp": datetime.now().astimezone().isoformat(
-                timespec="seconds"
-            ),
+            "timestamp": datetime.now().astimezone().isoformat(timespec="seconds"),
         }
 
         if not success:
@@ -230,7 +228,9 @@ def to_snake_case(name: str) -> str:
         ).lower()
 
     except Exception as e:
-        logger.error(f"Failed to convert name to snake_case '{name}': {e}", exc_info=True)
+        logger.error(
+            f"Failed to convert name to snake_case '{name}': {e}", exc_info=True
+        )
         raise CustomerChurnBaseError(f"Failed to convert name: '{name}'") from e
 
 
