@@ -40,4 +40,3 @@ ruff==0.12.1
 # Jupyter
 ipykernel==6.29.5
 jupyter==1.1.1
-
