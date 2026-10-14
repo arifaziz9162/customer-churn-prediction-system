@@ -131,7 +131,7 @@ jobs:
 
       - name: Check Airflow DAG Syntax
         run: |
-          python -m py_compile airflow/dags/wine_quality_dag.py
+          python -m py_compile airflow/dags/customer_churn_dag.py
 
       - name: Upload Lint Reports
         if: always()
