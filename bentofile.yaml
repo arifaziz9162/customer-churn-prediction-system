@@ -1,0 +1,26 @@
+service: "serving.service:CustomerChurnService"
+
+description: "Customer churn prediction service (Random Forest, promoted via MLflow)"
+
+labels:
+  owner: arif
+  project: customer-churn-prediction-system
+
+include:
+  - "serving/**/*.py"
+  - "src/customer_churn_prediction/**/*.py"
+
+exclude:
+  - "**/__pycache__/**"
+
+envs:
+  - name: "PYTHONPATH"
+    value: "/home/bentoml/bento/src/src"
+
+python:
+  requirements_txt: "./requirements.txt"
+
+docker:
+  distro: debian
+  python_version: "3.11"
+  system_packages: []
