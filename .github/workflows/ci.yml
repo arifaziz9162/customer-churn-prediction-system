@@ -135,7 +135,7 @@ jobs:
 
       - name: Upload Lint Reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: code-quality
           path: |
@@ -277,7 +277,7 @@ jobs:
 
       - name: Upload Validation Reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: validation-report
           path: |
@@ -336,7 +336,7 @@ jobs:
 
       - name: Upload Tests Results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pytest-results
           path: test-results.xml
@@ -345,7 +345,7 @@ jobs:
 
       - name: Upload Coverage Report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: |
@@ -400,7 +400,7 @@ jobs:
 
       - name: Upload Serving Tests Results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pytest-results-serving
           path: test-results-serving.xml

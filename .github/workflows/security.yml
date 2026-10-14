@@ -107,7 +107,7 @@ jobs:
 
       - name: Upload Trivy Report Artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: trivy-security-report
           path: trivy-results.sarif
@@ -121,7 +121,7 @@ jobs:
 
       - name: Upload Gitleaks Report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: gitleaks-report
           path: |

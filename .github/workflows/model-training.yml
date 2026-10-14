@@ -261,7 +261,7 @@ jobs:
           dvc status
 
       - name: Upload Model Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: trained-model
           path: |
@@ -271,7 +271,7 @@ jobs:
           retention-days: 30
 
       - name: Upload Evaluation Metrics
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: evaluation-metrics
           path: |
@@ -280,7 +280,7 @@ jobs:
           retention-days: 30
 
       - name: Upload Evaluation Reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: evaluation-reports
           path: |
@@ -289,7 +289,7 @@ jobs:
           retention-days: 30
 
       - name: Upload Pipeline Status
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pipeline-status
           path: |
@@ -298,7 +298,7 @@ jobs:
           retention-days: 30
 
       - name: Upload DVC files
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dvc-files
           path: |
@@ -361,7 +361,7 @@ jobs:
           du -sh reports || true
 
       - name: Upload Complete Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mlops-artifacts
           path: |
@@ -373,7 +373,7 @@ jobs:
 
       - name: Upload Logs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pipeline-logs
           path: |
@@ -495,7 +495,7 @@ jobs:
           cat artifacts/model_packaging/status.json
 
       - name: Upload Packaging Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: model-packaging
           path: |
