@@ -10,7 +10,7 @@ python-dotenv==1.2.2
 pandas==2.2.2
 numpy==1.26.4
 scikit-learn==1.5.1
-joblib==1.4.2
+joblib==1.6.0
 PyYAML==6.0.2
 python-box==7.2.0
 
