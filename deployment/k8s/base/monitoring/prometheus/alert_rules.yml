@@ -1,0 +1,83 @@
+groups:
+  - name: customer-churn-service
+    rules:
+
+      # Alert when the customer churn prediction service is down.
+      - alert: ChurnServiceDown
+        expr: up{job="customer-churn-service"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Customer churn prediction service is down"
+          description: "Prometheus cannot scrape the customer churn service at {{ $labels.instance }} for 2 minutes."
+
+      # Alert when more than 5% of prediction requests return HTTP 5xx errors.
+      - alert: ChurnServiceHighErrorRate
+        expr: |
+          (
+            sum(rate(bentoml_service_request_total{
+              endpoint="/api/v1/predict",
+              http_response_code=~"5.."
+            }[5m]))
+            /
+            clamp_min(
+              sum(rate(bentoml_service_request_total{
+                endpoint="/api/v1/predict"
+              }[5m])),
+              0.001
+            )
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Customer churn prediction error rate exceeds 5%"
+          description: "More than 5% of prediction requests are returning HTTP 5xx errors."
+
+      # Alert when the 95th percentile prediction latency exceeds 500 ms.
+      - alert: ChurnServiceHighLatencyP95
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (
+              rate(bentoml_service_request_duration_seconds_bucket{
+                endpoint="/api/v1/predict"
+              }[5m])
+            )
+          ) > 0.5
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Customer churn prediction P95 latency exceeds 500 ms"
+          description: "The 95th percentile prediction latency has remained above 500 ms for 10 minutes."
+
+      # Alert when prediction history cannot be saved to PostgreSQL.
+      - alert: ChurnPredictionHistoryNotSaving
+        expr: |
+          increase(churn_prediction_db_saves_total{
+            status="failure"
+          }[10m]) > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Customer churn predictions are not being saved to PostgreSQL"
+          description: "Failed prediction-history database saves have been detected."
+
+      # Alert when no requests have been received for 15 minutes.
+      - alert: ChurnServiceNoRecentRequests
+        expr: |
+          time() -
+          max(
+            bentoml_service_last_request_timestamp_seconds{
+              service_name=~".*[Cc]hurn.*"
+            }
+          ) > 900
+        for: 5m
+        labels:
+          severity: info
+        annotations:
+          summary: "No recent requests to the customer churn service"
+          description: "No request has been observed for more than 15 minutes. This may be normal during periods of low traffic."
