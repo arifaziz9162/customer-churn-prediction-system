@@ -1,0 +1,12 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Ignore verified Kubernetes ConfigMap key false positive"
+regexTarget = "match"
+regexes = [
+    '''key: (prometheus\.k8s\.yml|alert_rules\.yml)'''
+]
+paths = [
+    '''deployment/k8s/base/prometheus\.yaml'''
+]
