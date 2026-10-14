@@ -18,7 +18,7 @@ numpy==1.26.4
 
 # Machine Learning Runtime
 scikit-learn==1.5.1
-joblib==1.4.2
+joblib==1.6.0
 
 # Utilities
 PyYAML==6.0.2
