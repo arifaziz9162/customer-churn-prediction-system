@@ -56,10 +56,7 @@ class PredictionService:
 
         expected_count = getattr(self._model, "n_features_in_", None)
 
-        if (
-            expected_count is not None
-            and expected_count != len(FEATURE_COLUMNS)
-        ):
+        if expected_count is not None and expected_count != len(FEATURE_COLUMNS):
             raise ModelInferenceError(
                 "Model feature count does not match the serving "
                 f"configuration. Model={expected_count}, "
@@ -73,9 +70,7 @@ class PredictionService:
 
         missing = set(FEATURE_COLUMNS) - values.keys()
         if missing:
-            raise ValueError(
-                f"Missing required model features: {sorted(missing)}"
-            )
+            raise ValueError(f"Missing required model features: {sorted(missing)}")
 
         return pd.DataFrame(
             [[values[column] for column in FEATURE_COLUMNS]],
@@ -91,42 +86,30 @@ class PredictionService:
             classes = list(self._model.classes_)
 
             if 1 not in classes:
-                raise ValueError(
-                    "The trained model does not contain positive class 1."
-                )
+                raise ValueError("The trained model does not contain positive class 1.")
 
             positive_class_index = classes.index(1)
-            probability = float(
-                probabilities[0][positive_class_index]
-            )
+            probability = float(probabilities[0][positive_class_index])
 
             if not 0.0 <= probability <= 1.0:
-                raise ValueError(
-                    "The model returned an invalid probability."
-                )
+                raise ValueError("The model returned an invalid probability.")
 
             threshold = self._metadata.classification_threshold
             prediction = int(probability >= threshold)
 
         except Exception as exc:
-            PREDICTION_ERRORS_TOTAL.labels(
-                stage="inference"
-            ).inc()
+            PREDICTION_ERRORS_TOTAL.labels(stage="inference").inc()
 
             logger.error(
                 "Churn prediction failed.",
                 exc_info=True,
             )
 
-            raise ModelInferenceError(
-                "Churn prediction failed."
-            ) from exc
+            raise ModelInferenceError("Churn prediction failed.") from exc
 
         label = get_churn_label(prediction)
 
-        PREDICTIONS_TOTAL.labels(
-            churn_label=label.value
-        ).inc()
+        PREDICTIONS_TOTAL.labels(churn_label=label.value).inc()
 
         PREDICTION_PROBABILITY.observe(probability)
         observe_features(data.model_dump())
@@ -145,13 +128,9 @@ class PredictionService:
                     probability,
                 )
             except Exception:
-                PREDICTION_ERRORS_TOTAL.labels(
-                    stage="persistence"
-                ).inc()
+                PREDICTION_ERRORS_TOTAL.labels(stage="persistence").inc()
 
-                logger.exception(
-                    "Failed to submit prediction for persistence."
-                )
+                logger.exception("Failed to submit prediction for persistence.")
 
         return PredictionResponse(
             churn_probability=probability,

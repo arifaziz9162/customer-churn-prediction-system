@@ -26,7 +26,6 @@ from customer_churn_prediction.utils.common import (
     setup_mlflow,
 )
 
-
 logger = get_logger("model_evaluation", "model_evaluation.log")
 
 DEFAULT_THRESHOLD = 0.50

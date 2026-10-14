@@ -2,7 +2,6 @@
 
 from prometheus_client import Gauge
 
-
 MODEL_INFO = Gauge(
     "customer_churn_model_info",
     "Information about the model loaded by the serving application.",

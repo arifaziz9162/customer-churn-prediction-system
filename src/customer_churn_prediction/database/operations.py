@@ -5,7 +5,6 @@ from customer_churn_prediction.logger import DatabaseError, get_logger
 from .columns import FEATURE_COLUMNS, RAW_COLUMNS
 from .connection import get_connection, get_engine
 
-
 # Create logger
 logger = get_logger("db_operations", "database.log")
 

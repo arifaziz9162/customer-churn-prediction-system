@@ -1,11 +1,11 @@
 from .config_entity import (
     DataIngestionConfig,
-    DataValidationConfig,
     DataTransformationConfig,
-    ModelTrainerConfig,
+    DataValidationConfig,
     ModelEvaluationConfig,
-    ModelRegistryConfig,
     ModelPackagingConfig,
+    ModelRegistryConfig,
+    ModelTrainerConfig,
 )
 
 __all__ = [

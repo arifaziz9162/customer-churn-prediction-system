@@ -1,6 +1,6 @@
 """Unit tests for customer churn data transformation."""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pandas as pd
 import pytest

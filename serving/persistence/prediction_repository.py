@@ -9,7 +9,6 @@ from customer_churn_prediction.logger import (
     DatabaseError,
     get_logger,
 )
-
 from serving.config import settings
 from serving.metrics import DB_SAVE_TOTAL
 
@@ -21,7 +20,7 @@ class PredictionRepository:
 
     def __init__(self, workers: int | None = None) -> None:
         """Initialize the database write executor."""
-        
+
         self._executor = ThreadPoolExecutor(
             max_workers=workers or settings.DB_SAVE_WORKERS,
             thread_name_prefix="prediction-db",
@@ -48,18 +47,11 @@ class PredictionRepository:
 
         try:
             # Convert NumPy scalar values before sending data to PostgreSQL.
-            clean_features = [
-                self._to_python_value(value)
-                for value in features
-            ]
+            clean_features = [self._to_python_value(value) for value in features]
 
-            clean_prediction = int(
-                self._to_python_value(prediction)
-            )
+            clean_prediction = int(self._to_python_value(prediction))
 
-            clean_probability = float(
-                self._to_python_value(probability)
-            )
+            clean_probability = float(self._to_python_value(probability))
 
             db = DatabaseOperations()
 

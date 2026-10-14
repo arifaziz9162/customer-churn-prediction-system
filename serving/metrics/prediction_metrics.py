@@ -2,7 +2,6 @@
 
 from prometheus_client import Counter, Histogram
 
-
 PREDICTIONS_TOTAL = Counter(
     "customer_churn_predictions_total",
     "Total number of successful customer churn predictions.",

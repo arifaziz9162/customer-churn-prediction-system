@@ -5,17 +5,17 @@ Revises: 07da342dafc0
 Create Date: 2026-10-12 15:13:26.020902
 
 """
-from typing import Sequence, Union
 
-from alembic import op
+from collections.abc import Sequence
+
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = 'f1fd6cb99ede'
-down_revision: Union[str, Sequence[str], None] = '07da342dafc0'
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+revision: str = "f1fd6cb99ede"
+down_revision: str | Sequence[str] | None = "07da342dafc0"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -23,12 +23,7 @@ def upgrade() -> None:
 
     op.create_table(
         "predictions",
-        sa.Column(
-            "id",
-            sa.BigInteger(),
-            primary_key=True,
-            autoincrement=True
-        ),
+        sa.Column("id", sa.BigInteger(), primary_key=True, autoincrement=True),
         sa.Column("gender", sa.String(16), nullable=False),
         sa.Column("senior_citizen", sa.Integer(), nullable=False),
         sa.Column("partner", sa.String(8), nullable=False),
@@ -54,15 +49,11 @@ def upgrade() -> None:
             "created_at",
             sa.DateTime(timezone=True),
             nullable=False,
-            server_default=sa.func.now()
-        )
+            server_default=sa.func.now(),
+        ),
     )
 
-    op.create_index(
-        "ix_predictions_created_at",
-        "predictions",
-        ["created_at"]
-    )
+    op.create_index("ix_predictions_created_at", "predictions", ["created_at"])
 
 
 def downgrade() -> None:

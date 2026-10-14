@@ -3,11 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-
 from sklearn.metrics import accuracy_score
 
-from customer_churn_prediction.components import DataTransformation
-from customer_churn_prediction.components import ModelTrainer
+from customer_churn_prediction.components import DataTransformation, ModelTrainer
 
 
 def make_customer_dataset(rows=40):

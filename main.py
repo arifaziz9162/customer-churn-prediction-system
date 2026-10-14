@@ -14,7 +14,6 @@ from customer_churn_prediction.pipeline.stage_04_model_trainer import (
 from customer_churn_prediction.pipeline.stage_05_model_evaluation import (
     ModelEvaluationPipeline,
 )
-
 from customer_churn_prediction.pipeline.stage_06_model_registry import (
     ModelRegistryPipeline,
 )

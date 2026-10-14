@@ -10,7 +10,6 @@ from customer_churn_prediction.utils.common import (
     setup_mlflow,
 )
 
-
 logger = get_logger("model_registry", "model_registry.log")
 
 
@@ -85,10 +84,6 @@ class ModelRegistry:
             )
 
             return version
-
-        except Exception as e:
-            logger.error(f"Model registration failed: {e}", exc_info=True)
-            raise ModelRegistryError("Failed to register model") from e
 
         except Exception as e:
             logger.error(f"Model registration failed: {e}", exc_info=True)

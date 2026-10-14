@@ -45,9 +45,7 @@ class ModelMetadata:
             name=bento_model.tag.name,
             bento_version=bento_model.tag.version,
             mlflow_version=(
-                str(registry_version)
-                if registry_version is not None
-                else None
+                str(registry_version) if registry_version is not None else None
             ),
             mlflow_run_id=metadata.get("mlflow_run_id"),
             classification_threshold=float(

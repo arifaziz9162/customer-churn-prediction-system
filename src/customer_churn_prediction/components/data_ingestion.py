@@ -5,7 +5,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from kaggle.api.kaggle_api_extended import KaggleApi
 
-from customer_churn_prediction.database import DatabaseOperations, RAW_COLUMNS
+from customer_churn_prediction.database import RAW_COLUMNS, DatabaseOperations
 from customer_churn_prediction.entity import DataIngestionConfig
 from customer_churn_prediction.logger import DataIngestionError, get_logger
 from customer_churn_prediction.utils import get_size, save_status

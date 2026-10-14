@@ -144,7 +144,6 @@ def test_load_model(packaging):
     version.version = "2"
 
     expected_model = MagicMock()
-    model_uri = f"models:/{packaging.config.registry_model_name}/2"
 
     with patch.object(
         packaging,

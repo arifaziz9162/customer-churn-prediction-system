@@ -94,7 +94,7 @@ def test_save_propagates_database_failure(features):
 
 def test_save_async_submits_background_write(features):
     """Submit a persistence operation to the executor."""
-    
+
     repository = PredictionRepository.__new__(PredictionRepository)
     repository._executor = Mock()
 

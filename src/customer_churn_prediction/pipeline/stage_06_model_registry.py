@@ -2,7 +2,6 @@ from customer_churn_prediction.components import ModelRegistry
 from customer_churn_prediction.config import ConfigurationManager
 from customer_churn_prediction.logger import get_logger
 
-
 logger = get_logger("model_registry_pipeline", "pipeline.log")
 STAGE_NAME = "Model Registry Stage"
 

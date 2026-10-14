@@ -29,30 +29,20 @@ class CustomerChurnService:
     """Serve customer churn predictions using a packaged model."""
 
     # Resolve the exact model artifact configured for this deployment.
-    bento_model = bentoml.models.BentoModel(
-        settings.BENTO_MODEL_TAG
-    )
+    bento_model = bentoml.models.BentoModel(settings.BENTO_MODEL_TAG)
 
     def __init__(self) -> None:
         """Load the model and initialize the serving components."""
 
         # Load the model through BentoML's model-loading interface.
         # This avoids assuming the model artifact is a standalone joblib file.
-        model = bentoml.sklearn.load_model(
-            self.bento_model.tag
-        )
+        model = bentoml.sklearn.load_model(self.bento_model.tag)
 
         # Read version, threshold, and evaluation metrics from model metadata.
-        metadata = ModelMetadata.from_bento_model(
-            self.bento_model
-        )
+        metadata = ModelMetadata.from_bento_model(self.bento_model)
 
         # Enable database persistence only when configured.
-        repository = (
-            PredictionRepository()
-            if settings.DB_SAVE_ENABLED
-            else None
-        )
+        repository = PredictionRepository() if settings.DB_SAVE_ENABLED else None
 
         self.prediction_service = PredictionService(
             model=model,
@@ -105,6 +95,4 @@ class CustomerChurnService:
         """Return recent persisted prediction history."""
         request = PredictionsRequest(**params)
 
-        return self.prediction_service.recent_predictions(
-            request.limit
-        )
+        return self.prediction_service.recent_predictions(request.limit)

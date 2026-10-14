@@ -2,7 +2,6 @@
 
 from prometheus_client import Histogram
 
-
 FEATURE_METRICS = {
     "tenure": Histogram(
         "customer_churn_feature_tenure_months",

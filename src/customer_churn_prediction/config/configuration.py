@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 
 from customer_churn_prediction.constants import (
     CONFIG_FILE_PATH,
-    SCHEMA_FILE_PATH,
     PARAMS_FILE_PATH,
+    SCHEMA_FILE_PATH,
 )
 from customer_churn_prediction.entity.config_entity import (
     DataIngestionConfig,

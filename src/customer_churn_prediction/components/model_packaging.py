@@ -5,7 +5,6 @@ from customer_churn_prediction.entity.config_entity import ModelPackagingConfig
 from customer_churn_prediction.logger import ModelPackagingError, get_logger
 from customer_churn_prediction.utils.common import save_json, save_status, setup_mlflow
 
-
 logger = get_logger("model_packaging", "model_packaging.log")
 
 
@@ -269,6 +268,5 @@ class ModelPackaging:
                 save_status(self.config.status_file, "model_packaging", False, str(e))
             except Exception:
                 logger.exception("Failed to save model packaging status")
-
             logger.error(f"Model packaging process failed: {e}", exc_info=True)
             raise ModelPackagingError("Model packaging process failed") from e

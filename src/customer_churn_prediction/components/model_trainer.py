@@ -6,12 +6,12 @@ from mlflow.models import infer_signature
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
+from sklearn.metrics import average_precision_score, roc_auc_score
 from sklearn.model_selection import (
     StratifiedKFold,
     cross_val_predict,
     cross_val_score,
 )
-from sklearn.metrics import average_precision_score, roc_auc_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
@@ -24,7 +24,6 @@ from customer_churn_prediction.utils.common import (
     save_status,
     setup_mlflow,
 )
-
 
 logger = get_logger("model_trainer", "model_trainer.log")
 
@@ -307,9 +306,7 @@ class ModelTrainer:
             )
 
             # Calculate training ROC-AUC and PR-AUC.
-            train_metrics["roc_auc"] = float(
-                roc_auc_score(y_train, proba_train)
-            )
+            train_metrics["roc_auc"] = float(roc_auc_score(y_train, proba_train))
             train_metrics["pr_auc"] = float(
                 average_precision_score(y_train, proba_train)
             )
@@ -339,7 +336,6 @@ class ModelTrainer:
             logger.error(f"Final model training failed: {e}", exc_info=True)
             raise ModelTrainingError("Failed to train final model") from e
 
-
     def run(self) -> dict:
         """Run the model training process and track results in MLflow."""
 
@@ -360,11 +356,7 @@ class ModelTrainer:
                 y_train,
             )
 
-            oof_metrics = (
-                sweep.loc[sweep["threshold"] == threshold]
-                .iloc[0]
-                .to_dict()
-            )
+            oof_metrics = sweep.loc[sweep["threshold"] == threshold].iloc[0].to_dict()
 
             # Train the final model and calculate training metrics.
             result = self.train_model(
@@ -400,9 +392,7 @@ class ModelTrainer:
                         "scoring": self.config.scoring,
                         "classification_threshold": threshold,
                         "threshold_selection_method": "cost_minimizing_oof",
-                        "cost_per_missed_churn": (
-                            self.config.cost_per_missed_churn
-                        ),
+                        "cost_per_missed_churn": (self.config.cost_per_missed_churn),
                         "cost_per_unnecessary_offer": (
                             self.config.cost_per_unnecessary_offer
                         ),
