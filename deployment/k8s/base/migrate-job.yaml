@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: customer-churn-migrate
+  namespace: customer-churn
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: migrate
+        image: customer-churn-migrate:latest
+        envFrom:
+          - secretRef: {name: customer-churn-secrets}
+        env:
+          - name: DB_HOST
+            value: postgres
+          - name: DB_PORT
+            value: "5432"
