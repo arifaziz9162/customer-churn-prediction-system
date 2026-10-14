@@ -126,7 +126,7 @@ jobs:
           echo "Packaged: $tag"
 
       - name: Upload Packaging Info
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: model-packaging-info
           path: artifacts/model_packaging/info.json
@@ -253,7 +253,7 @@ jobs:
 
       - name: Upload Bento Trivy Report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: bento-trivy-report
           path: trivy-bento-results.sarif
