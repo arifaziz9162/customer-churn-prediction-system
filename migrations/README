@@ -1,0 +1,15 @@
+# Database Migrations
+
+This directory contains the database migrations for the Customer Churn Prediction project.
+
+Alembic is used to manage changes to the PostgreSQL database schema.
+
+## Structure
+
+```text
+migrations/
+├── README
+├── env.py
+├── script.py.mako
+└── versions
+    └── 07da342dafc0_create_churn_data_table.py
