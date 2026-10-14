@@ -1,0 +1,400 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python -m customer_churn_prediction.pipeline.stage_01_data_ingestion
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: cbd930ac89b9708d49d7fb08f37110c6
+      size: 2374
+    - path: src/customer_churn_prediction/components/data_ingestion.py
+      hash: md5
+      md5: 20d0c630893133f1ec1368872c92da7f
+      size: 6998
+    - path: src/customer_churn_prediction/config/configuration.py
+      hash: md5
+      md5: f32d74bd7d4b9cf418e4a48509915f8f
+      size: 9267
+    - path: src/customer_churn_prediction/entity/config_entity.py
+      hash: md5
+      md5: adb8d5bd52380c24ba6588fab5ccacd2
+      size: 2547
+    - path: src/customer_churn_prediction/pipeline/stage_01_data_ingestion.py
+      hash: md5
+      md5: 36942126fa735f082b7db8b99d56dcef
+      size: 1001
+    - path: src/customer_churn_prediction/utils/common.py
+      hash: md5
+      md5: 47c72f2ec463fabb7b29d4f73fa0ac46
+      size: 8617
+    outs:
+    - path: artifacts/data_ingestion/raw_data.csv
+      hash: md5
+      md5: 0f9de68e012bd3aed5fa7cdc9fc421af
+      size: 977501
+    - path: artifacts/data_ingestion/status.json
+      hash: md5
+      md5: 7dc64c1ea917c76d309ff8a8e973e2e7
+      size: 104
+  data_validation:
+    cmd: python -m customer_churn_prediction.pipeline.stage_02_data_validation
+    deps:
+    - path: artifacts/data_ingestion/raw_data.csv
+      hash: md5
+      md5: 0f9de68e012bd3aed5fa7cdc9fc421af
+      size: 977501
+    - path: config/config.yaml
+      hash: md5
+      md5: cbd930ac89b9708d49d7fb08f37110c6
+      size: 2374
+    - path: config/schema.yaml
+      hash: md5
+      md5: 726931f6f492decf1a4aa6ca9ce1fb97
+      size: 1882
+    - path: src/customer_churn_prediction/components/data_validation.py
+      hash: md5
+      md5: 0a9de8289d4d891b09153df54ccce22f
+      size: 11391
+    - path: src/customer_churn_prediction/config/configuration.py
+      hash: md5
+      md5: f32d74bd7d4b9cf418e4a48509915f8f
+      size: 9267
+    - path: src/customer_churn_prediction/entity/config_entity.py
+      hash: md5
+      md5: adb8d5bd52380c24ba6588fab5ccacd2
+      size: 2547
+    - path: src/customer_churn_prediction/pipeline/stage_02_data_validation.py
+      hash: md5
+      md5: fba5945e753d0729cc6fc587dfcfbbdb
+      size: 1015
+    - path: src/customer_churn_prediction/utils/common.py
+      hash: md5
+      md5: 47c72f2ec463fabb7b29d4f73fa0ac46
+      size: 8617
+    outs:
+    - path: artifacts/data_validation/status.json
+      hash: md5
+      md5: 23c067c094f5d940d6566178cf078f7f
+      size: 105
+  data_transformation:
+    cmd: python -m 
+      customer_churn_prediction.pipeline.stage_03_data_transformation
+    deps:
+    - path: artifacts/data_ingestion/raw_data.csv
+      hash: md5
+      md5: 0f9de68e012bd3aed5fa7cdc9fc421af
+      size: 977501
+    - path: artifacts/data_validation/status.json
+      hash: md5
+      md5: 23c067c094f5d940d6566178cf078f7f
+      size: 105
+    - path: config/config.yaml
+      hash: md5
+      md5: cbd930ac89b9708d49d7fb08f37110c6
+      size: 2374
+    - path: config/schema.yaml
+      hash: md5
+      md5: 726931f6f492decf1a4aa6ca9ce1fb97
+      size: 1882
+    - path: src/customer_churn_prediction/components/data_transformation.py
+      hash: md5
+      md5: 575ccea4b996edbe0d70179d5d5cf127
+      size: 6629
+    - path: src/customer_churn_prediction/config/configuration.py
+      hash: md5
+      md5: f32d74bd7d4b9cf418e4a48509915f8f
+      size: 9267
+    - path: src/customer_churn_prediction/entity/config_entity.py
+      hash: md5
+      md5: adb8d5bd52380c24ba6588fab5ccacd2
+      size: 2547
+    - path: 
+        src/customer_churn_prediction/pipeline/stage_03_data_transformation.py
+      hash: md5
+      md5: 370f427585e65990b035039b0ee70cd1
+      size: 1079
+    - path: src/customer_churn_prediction/utils/common.py
+      hash: md5
+      md5: 47c72f2ec463fabb7b29d4f73fa0ac46
+      size: 8617
+    params:
+      config/params.yaml:
+        TRAINING.RANDOM_STATE: 42
+        TRAINING.TEST_SIZE: 0.2
+    outs:
+    - path: artifacts/data_transformation/status.json
+      hash: md5
+      md5: 41dd95845a106490c4d33838a950b542
+      size: 109
+    - path: artifacts/data_transformation/test.csv
+      hash: md5
+      md5: 257e2c57b3b5822916081f52e59c76ba
+      size: 177534
+    - path: artifacts/data_transformation/train.csv
+      hash: md5
+      md5: 57cc787bbb7df2aaf1a07dd9fa688e07
+      size: 708225
+  model_trainer:
+    cmd: python -m customer_churn_prediction.pipeline.stage_04_model_trainer
+    deps:
+    - path: artifacts/data_transformation/train.csv
+      hash: md5
+      md5: 57cc787bbb7df2aaf1a07dd9fa688e07
+      size: 708225
+    - path: config/config.yaml
+      hash: md5
+      md5: cbd930ac89b9708d49d7fb08f37110c6
+      size: 2374
+    - path: config/params.yaml
+      hash: md5
+      md5: b711777af63d6b4ca90708483fe97dbf
+      size: 977
+    - path: config/schema.yaml
+      hash: md5
+      md5: 726931f6f492decf1a4aa6ca9ce1fb97
+      size: 1882
+    - path: src/customer_churn_prediction/components/model_trainer.py
+      hash: md5
+      md5: 6ab5369e913fd361a18d4401314d8070
+      size: 14558
+    - path: src/customer_churn_prediction/config/configuration.py
+      hash: md5
+      md5: f32d74bd7d4b9cf418e4a48509915f8f
+      size: 9267
+    - path: src/customer_churn_prediction/entity/config_entity.py
+      hash: md5
+      md5: adb8d5bd52380c24ba6588fab5ccacd2
+      size: 2547
+    - path: src/customer_churn_prediction/pipeline/stage_04_model_trainer.py
+      hash: md5
+      md5: 70ca660978ac8a4bbe6ef6983847efe0
+      size: 1014
+    - path: src/customer_churn_prediction/utils/common.py
+      hash: md5
+      md5: 47c72f2ec463fabb7b29d4f73fa0ac46
+      size: 8617
+    params:
+      config/params.yaml:
+        BAYESIAN_OPTIMIZATION:
+          N_TRIALS: 200
+          SEED: 42
+          DIRECTION: maximize
+        RANDOM_FOREST_SEARCH_SPACE:
+          N_ESTIMATORS:
+          - 100
+          - 300
+          MAX_DEPTH:
+          - 5
+          - 15
+          MIN_SAMPLES_SPLIT:
+          - 2
+          - 20
+          MIN_SAMPLES_LEAF:
+          - 1
+          - 8
+          MAX_FEATURES:
+          - sqrt
+          - log2
+          CLASS_WEIGHT:
+          - 
+          - balanced
+          - balanced_subsample
+        THRESHOLD_SELECTION:
+          MIN_THRESHOLD: 0.3
+          MAX_THRESHOLD: 0.6
+          STEP: 0.01
+          COST_PER_MISSED_CHURN: 500
+          COST_PER_UNNECESSARY_OFFER: 50
+        TRAINING.CV_FOLDS: 5
+        TRAINING.RANDOM_STATE: 42
+        TRAINING.SCORING: recall
+    outs:
+    - path: artifacts/model_trainer/model.joblib
+      hash: md5
+      md5: 37b79c6905e06c6a12de66a3920fc7ae
+      size: 1043039
+    - path: artifacts/model_trainer/status.json
+      hash: md5
+      md5: eae0dc9a2869ef0ad37261c00fce9618
+      size: 103
+    - path: artifacts/model_trainer/threshold_sweep.csv
+      hash: md5
+      md5: e797126e49347a2c9369d6236f3a2415
+      size: 3485
+    - path: artifacts/model_trainer/training_summary.json
+      hash: md5
+      md5: 87f5cef4742ff83551b1ba39b9d8a7cc
+      size: 777
+  model_evaluation:
+    cmd: python -m customer_churn_prediction.pipeline.stage_05_model_evaluation
+    deps:
+    - path: artifacts/data_transformation/test.csv
+      hash: md5
+      md5: 257e2c57b3b5822916081f52e59c76ba
+      size: 177534
+    - path: artifacts/model_trainer/model.joblib
+      hash: md5
+      md5: 37b79c6905e06c6a12de66a3920fc7ae
+      size: 1043039
+    - path: artifacts/model_trainer/threshold_sweep.csv
+      hash: md5
+      md5: e797126e49347a2c9369d6236f3a2415
+      size: 3485
+    - path: artifacts/model_trainer/training_summary.json
+      hash: md5
+      md5: 87f5cef4742ff83551b1ba39b9d8a7cc
+      size: 777
+    - path: config/config.yaml
+      hash: md5
+      md5: cbd930ac89b9708d49d7fb08f37110c6
+      size: 2374
+    - path: config/params.yaml
+      hash: md5
+      md5: b711777af63d6b4ca90708483fe97dbf
+      size: 977
+    - path: src/customer_churn_prediction/components/model_evaluation.py
+      hash: md5
+      md5: 942d534ae7972fa1dfbd1e318bd3571f
+      size: 15233
+    - path: src/customer_churn_prediction/config/configuration.py
+      hash: md5
+      md5: f32d74bd7d4b9cf418e4a48509915f8f
+      size: 9267
+    - path: src/customer_churn_prediction/entity/config_entity.py
+      hash: md5
+      md5: adb8d5bd52380c24ba6588fab5ccacd2
+      size: 2547
+    - path: src/customer_churn_prediction/pipeline/stage_05_model_evaluation.py
+      hash: md5
+      md5: 9cf60ea8e83cffb58e5e1255c4a53c19
+      size: 1050
+    - path: src/customer_churn_prediction/utils/common.py
+      hash: md5
+      md5: 47c72f2ec463fabb7b29d4f73fa0ac46
+      size: 8617
+    params:
+      config/params.yaml:
+        MODEL_EVALUATION:
+          IMPORTANCE_SCORING: roc_auc
+          IMPORTANCE_REPEATS: 10
+        THRESHOLD_SELECTION:
+          MIN_THRESHOLD: 0.3
+          MAX_THRESHOLD: 0.6
+          STEP: 0.01
+          COST_PER_MISSED_CHURN: 500
+          COST_PER_UNNECESSARY_OFFER: 50
+        TRAINING.RANDOM_STATE: 42
+    outs:
+    - path: artifacts/model_evaluation/metrics.json
+      hash: md5
+      md5: 927df624b33b48a59e5189ad5cb8e292
+      size: 773
+    - path: artifacts/model_evaluation/status.json
+      hash: md5
+      md5: 0430f0d931ba81b42ed1a8247949d9ef
+      size: 106
+  model_registry:
+    cmd: python -m customer_churn_prediction.pipeline.stage_06_model_registry
+    deps:
+    - path: artifacts/data_transformation/test.csv
+      hash: md5
+      md5: 257e2c57b3b5822916081f52e59c76ba
+      size: 177534
+    - path: artifacts/model_evaluation/metrics.json
+      hash: md5
+      md5: 927df624b33b48a59e5189ad5cb8e292
+      size: 773
+    - path: artifacts/model_trainer/training_summary.json
+      hash: md5
+      md5: 87f5cef4742ff83551b1ba39b9d8a7cc
+      size: 777
+    - path: config/config.yaml
+      hash: md5
+      md5: cbd930ac89b9708d49d7fb08f37110c6
+      size: 2374
+    - path: config/params.yaml
+      hash: md5
+      md5: b711777af63d6b4ca90708483fe97dbf
+      size: 977
+    - path: src/customer_churn_prediction/components/model_registry.py
+      hash: md5
+      md5: 03fee5aef3a82f571e134c8a76d83e21
+      size: 10165
+    - path: src/customer_churn_prediction/config/configuration.py
+      hash: md5
+      md5: f32d74bd7d4b9cf418e4a48509915f8f
+      size: 9267
+    - path: src/customer_churn_prediction/entity/config_entity.py
+      hash: md5
+      md5: adb8d5bd52380c24ba6588fab5ccacd2
+      size: 2547
+    - path: src/customer_churn_prediction/pipeline/stage_06_model_registry.py
+      hash: md5
+      md5: 8633e676da888a3a17d6a886d5d6bc00
+      size: 1025
+    - path: src/customer_churn_prediction/utils/common.py
+      hash: md5
+      md5: 47c72f2ec463fabb7b29d4f73fa0ac46
+      size: 8617
+    params:
+      config/params.yaml:
+        MODEL_REGISTRY:
+          PROMOTION_METRIC: roc_auc
+          MIN_IMPROVEMENT: 0.0
+    outs:
+    - path: artifacts/model_registry/registry_report.json
+      hash: md5
+      md5: fce6e89d2041083c126bab65d16a0389
+      size: 248
+    - path: artifacts/model_registry/status.json
+      hash: md5
+      md5: bdee40f65d410b5ff94b2b21205bfccb
+      size: 104
+  model_packaging:
+    cmd: python -m customer_churn_prediction.pipeline.stage_07_model_packaging
+    deps:
+    - path: artifacts/model_registry/registry_report.json
+      hash: md5
+      md5: fce6e89d2041083c126bab65d16a0389
+      size: 248
+    - path: artifacts/model_registry/status.json
+      hash: md5
+      md5: bdee40f65d410b5ff94b2b21205bfccb
+      size: 104
+    - path: config/config.yaml
+      hash: md5
+      md5: cbd930ac89b9708d49d7fb08f37110c6
+      size: 2374
+    - path: config/params.yaml
+      hash: md5
+      md5: b711777af63d6b4ca90708483fe97dbf
+      size: 977
+    - path: src/customer_churn_prediction/components/model_packaging.py
+      hash: md5
+      md5: 19f34cd4f358911fa204c8dd9ed19f2b
+      size: 9344
+    - path: src/customer_churn_prediction/config/configuration.py
+      hash: md5
+      md5: f32d74bd7d4b9cf418e4a48509915f8f
+      size: 9267
+    - path: src/customer_churn_prediction/entity/config_entity.py
+      hash: md5
+      md5: adb8d5bd52380c24ba6588fab5ccacd2
+      size: 2547
+    - path: src/customer_churn_prediction/pipeline/stage_07_model_packaging.py
+      hash: md5
+      md5: f6d840defe800adaba7f5e651dbe8116
+      size: 1035
+    - path: src/customer_churn_prediction/utils/common.py
+      hash: md5
+      md5: 47c72f2ec463fabb7b29d4f73fa0ac46
+      size: 8617
+    outs:
+    - path: artifacts/model_packaging/packaging_report.json
+      hash: md5
+      md5: 0a74985d7428b3fbbe132f55131a2e41
+      size: 576
+    - path: artifacts/model_packaging/status.json
+      hash: md5
+      md5: b5c1478f19015a00df7babdc645f2abd
+      size: 105
