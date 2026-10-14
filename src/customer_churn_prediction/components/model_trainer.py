@@ -11,6 +11,7 @@ from sklearn.model_selection import (
     cross_val_predict,
     cross_val_score,
 )
+from sklearn.metrics import average_precision_score, roc_auc_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
@@ -283,7 +284,7 @@ class ModelTrainer:
         threshold: float,
         sweep: pd.DataFrame,
     ) -> dict:
-        """Train the final Random Forest model and log it to MLflow."""
+        """Train the final Random Forest model and calculate training metrics."""
 
         try:
             logger.info(
@@ -292,43 +293,103 @@ class ModelTrainer:
 
             model = self.build_pipeline(best_params)
             model.fit(x_train, y_train)
+
+            # Predict churn probabilities on the training dataset.
+            proba_train = model.predict_proba(x_train)[:, 1]
+
+            # Calculate classification metrics using the selected threshold.
             train_metrics = classification_metrics(
                 y_train,
-                model.predict_proba(x_train)[:, 1],
+                proba_train,
                 threshold,
                 self.config.cost_per_missed_churn,
                 self.config.cost_per_unnecessary_offer,
             )
 
+            # Calculate training ROC-AUC and PR-AUC.
+            train_metrics["roc_auc"] = float(
+                roc_auc_score(y_train, proba_train)
+            )
+            train_metrics["pr_auc"] = float(
+                average_precision_score(y_train, proba_train)
+            )
+
+            logger.info(f"Train ROC-AUC: '{train_metrics['roc_auc']:.4f}'")
+            logger.info(f"Train PR-AUC: '{train_metrics['pr_auc']:.4f}'")
+
+            # Save the trained model.
             self.config.model_path.parent.mkdir(parents=True, exist_ok=True)
             save_bin(model, self.config.model_path)
 
-            self.config.threshold_sweep_path.parent.mkdir(parents=True, exist_ok=True)
+            # Save the threshold analysis results.
+            self.config.threshold_sweep_path.parent.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
             sweep.to_csv(self.config.threshold_sweep_path, index=False)
+
             logger.info(f"Final model saved: '{self.config.model_path}'")
-            return {"model": model, "train_metrics": train_metrics}
+
+            return {
+                "model": model,
+                "train_metrics": train_metrics,
+            }
 
         except Exception as e:
             logger.error(f"Final model training failed: {e}", exc_info=True)
             raise ModelTrainingError("Failed to train final model") from e
 
+
     def run(self) -> dict:
-        """Run the model training process."""
+        """Run the model training process and track results in MLflow."""
 
         try:
             setup_mlflow(self.config.mlflow)
+
+            # Load and prepare the training data.
             train = self.load_data()
             x_train, y_train = self.prepare_train_data(train)
-            best_params, best_cv_score = self.optimize(x_train, y_train)
-            sweep, threshold = self.select_threshold(best_params, x_train, y_train)
-            oof_metrics = sweep.loc[sweep["threshold"] == threshold].iloc[0].to_dict()
 
-            result = self.train_model(x_train, y_train, best_params, threshold, sweep)
+            # Optimize model hyperparameters using cross-validation.
+            best_params, best_cv_score = self.optimize(x_train, y_train)
+
+            # Select the classification threshold using out-of-fold predictions.
+            sweep, threshold = self.select_threshold(
+                best_params,
+                x_train,
+                y_train,
+            )
+
+            oof_metrics = (
+                sweep.loc[sweep["threshold"] == threshold]
+                .iloc[0]
+                .to_dict()
+            )
+
+            # Train the final model and calculate training metrics.
+            result = self.train_model(
+                x_train,
+                y_train,
+                best_params,
+                threshold,
+                sweep,
+            )
 
             model = result["model"]
             train_metrics = result["train_metrics"]
 
-            with mlflow.start_run(run_name="random_forest_optuna") as run:
+            # Create a dedicated MLflow training run.
+            with mlflow.start_run(run_name="model_training") as run:
+                mlflow.set_tags(
+                    {
+                        "project": "customer-churn-prediction-system",
+                        "stage": "Model Training",
+                        "model": type(model.named_steps["model"]).__name__,
+                        "framework": "scikit-learn",
+                    }
+                )
+
+                # Log model configuration and training settings.
                 mlflow.log_params(
                     {
                         "model": "RandomForest",
@@ -338,8 +399,10 @@ class ModelTrainer:
                         "cv_folds": self.config.cv_folds,
                         "scoring": self.config.scoring,
                         "classification_threshold": threshold,
-                        "threshold_selection_method": ("cost_minimizing_oof"),
-                        "cost_per_missed_churn": (self.config.cost_per_missed_churn),
+                        "threshold_selection_method": "cost_minimizing_oof",
+                        "cost_per_missed_churn": (
+                            self.config.cost_per_missed_churn
+                        ),
                         "cost_per_unnecessary_offer": (
                             self.config.cost_per_unnecessary_offer
                         ),
@@ -348,20 +411,38 @@ class ModelTrainer:
 
                 mlflow.log_params(best_params)
 
-                mlflow.log_metric(f"cv_{self.config.scoring}", best_cv_score)
-
+                # Log cross-validation and out-of-fold metrics.
                 mlflow.log_metric(
-                    "oof_estimated_total_cost", oof_metrics["estimated_total_cost"]
+                    f"cv_{self.config.scoring}",
+                    best_cv_score,
                 )
 
-                for metric in ("accuracy", "precision", "recall", "f1"):
-                    mlflow.log_metric(f"train_{metric}", train_metrics[metric])
+                mlflow.log_metric(
+                    "oof_estimated_total_cost",
+                    oof_metrics["estimated_total_cost"],
+                )
 
+                # Log training classification metrics.
+                for metric in (
+                    "accuracy",
+                    "precision",
+                    "recall",
+                    "f1",
+                    "roc_auc",
+                    "pr_auc",
+                ):
+                    mlflow.log_metric(
+                        f"train_{metric}",
+                        train_metrics[metric],
+                    )
+
+                # Log the threshold analysis table.
                 mlflow.log_artifact(
                     str(self.config.threshold_sweep_path),
                     artifact_path="evaluation_tables",
                 )
 
+                # Log the trained model to MLflow.
                 model_info = mlflow.sklearn.log_model(
                     sk_model=model,
                     name="model",
@@ -374,9 +455,11 @@ class ModelTrainer:
                     ),
                     input_example=x_train.head(5),
                 )
+
                 run_id = run.info.run_id
                 model_uri = model_info.model_uri
 
+                # Save model information and training metrics.
                 summary = {
                     "run_id": run_id,
                     "model_uri": model_uri,
@@ -389,18 +472,32 @@ class ModelTrainer:
 
                 save_json(self.config.summary_path, summary)
 
-                save_status(self.config.status_file, "model_trainer", True)
+                save_status(
+                    self.config.status_file,
+                    "model_trainer",
+                    True,
+                )
 
             logger.info(
                 f"Model training completed successfully - MLflow run: '{run_id}'"
+            )
+            logger.info(
+                f"Train ROC-AUC: '{train_metrics['roc_auc']:.4f}', "
+                f"Train PR-AUC: '{train_metrics['pr_auc']:.4f}'"
             )
 
             return summary
 
         except Exception as e:
             try:
-                save_status(self.config.status_file, "model_trainer", False, str(e))
+                save_status(
+                    self.config.status_file,
+                    "model_trainer",
+                    False,
+                    str(e),
+                )
             except Exception:
                 logger.exception("Failed to save model trainer status")
+
             logger.error(f"Unexpected error: {e}", exc_info=True)
             raise ModelTrainingError("Model training process failed") from e
