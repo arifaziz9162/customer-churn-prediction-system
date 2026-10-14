@@ -1,6 +1,6 @@
 # Experiment Tracking and Model Registry
 mlflow==3.16.1
-dagshub==0.7.1
+dagshub==0.7.2
 
 # Model Training
 optuna==4.9.0
